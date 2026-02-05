@@ -1,0 +1,62 @@
+name: Post-Deploy Validation
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Cloudflare"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      app_url:
+        description: 'Application URL to validate'
+        required: true
+        default: 'https://hello-world-app.pages.dev'
+
+jobs:
+  validate-deployment:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Validate Homepage Availability
+        run: |
+          URL="${{ github.event.inputs.app_url || 'https://hello-world-app.pages.dev' }}"
+          echo "Validating deployment at: $URL"
+          
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          
+          if [ "$STATUS_CODE" -eq 200 ]; then
+            echo "✓ Homepage is accessible (HTTP $STATUS_CODE)"
+          else
+            echo "✗ Homepage returned unexpected status: HTTP $STATUS_CODE"
+            exit 1
+          fi
+      
+      - name: Test API Endpoint
+        run: |
+          URL="${{ github.event.inputs.app_url || 'https://hello-world-app.pages.dev' }}"
+          API_URL="${URL}/api/greetings"
+          
+          echo "Testing API endpoint: $API_URL"
+          
+          RESPONSE=$(curl -s -w "\n%{http_code}" "$API_URL")
+          STATUS_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+          
+          if [ "$STATUS_CODE" -eq 200 ]; then
+            echo "✓ API endpoint is responding (HTTP $STATUS_CODE)"
+            echo "Response: $BODY"
+          else
+            echo "✗ API endpoint returned unexpected status: HTTP $STATUS_CODE"
+            exit 1
+          fi
+      
+      - name: Validation Report
+        if: always()
+        run: |
+          echo "### Deployment Validation Report :clipboard:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Validation completed for deployed application" >> $GITHUB_STEP_SUMMARY
+          echo "All critical endpoints checked" >> $GITHUB_STEP_SUMMARY

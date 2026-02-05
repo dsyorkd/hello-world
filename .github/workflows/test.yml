@@ -1,0 +1,45 @@
+name: Test Build
+
+on:
+  push:
+    branches: [ main, master, develop, copilot/** ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  test-application:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Project Dependencies
+        run: npm ci
+      
+      - name: Build Application
+        run: npm run build
+        
+      - name: Verify Build Output
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "Build directory not found!"
+            exit 1
+          fi
+          echo "Build successful - dist directory created"
+          ls -la dist/
+          
+      - name: Check Build Artifacts
+        run: |
+          if [ ! -f "dist/index.html" ]; then
+            echo "index.html not found in build output!"
+            exit 1
+          fi
+          echo "All required build artifacts present"
