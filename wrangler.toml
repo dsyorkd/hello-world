@@ -4,6 +4,6 @@ pages_build_output_dir = "dist"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "hello-world-db"
-database_id = "PLACEHOLDER_DB_ID"
+database_name = "hack-a-thon"
+database_id = "0d18e7f4-3720-47a1-85a5-28014c5d7750"
 migrations_dir = "migrations"

@@ -9,7 +9,7 @@ on:
       app_url:
         description: 'Application URL to validate'
         required: true
-        default: 'https://hello-world-app.pages.dev'
+        default: 'https://helloworld.twistedlife.space'
 
 jobs:
   validate-deployment:
@@ -24,7 +24,7 @@ jobs:
       
       - name: Validate Homepage Availability
         run: |
-          URL="${{ github.event.inputs.app_url || 'https://hello-world-app.pages.dev' }}"
+          URL="${{ github.event.inputs.app_url || 'https://helloworld.twistedlife.space' }}"
           echo "Validating deployment at: $URL"
           
           STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
@@ -38,7 +38,7 @@ jobs:
       
       - name: Test API Endpoint
         run: |
-          URL="${{ github.event.inputs.app_url || 'https://hello-world-app.pages.dev' }}"
+          URL="${{ github.event.inputs.app_url || 'https://helloworld.twistedlife.space' }}"
           API_URL="${URL}/api/greetings"
           
           echo "Testing API endpoint: $API_URL"

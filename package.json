@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "npm run build",
     "deploy": "wrangler pages deploy dist",
-    "cf:dev": "wrangler pages dev dist --d1 DB=hello-world-db"
+    "cf:dev": "wrangler pages dev dist --d1 DB=hack-a-thon"
   },
   "repository": {
     "type": "git",
