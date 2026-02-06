@@ -17,35 +17,38 @@ const generateProjectionData = (
   retireAge: number,
   startBalance: number,
   monthlySavings: number,
-  riskMultiplier: number
+  riskMultiplier: number,
+  retirementSpending: number,
+  socialSecurityMonthly: number
 ) => {
   const data = [];
   let balance = startBalance;
+  const growthRate = 0.07 * riskMultiplier;
+  const retiredGrowthRate = growthRate * 0.7;
 
   for (let age = startAge; age <= 95; age++) {
-    const yearsFromStart = age - startAge;
     const isRetired = age >= retireAge;
+    const spread = Math.max(0, age - startAge) / 60;
 
-    const baseGrowth = isRetired ? 0.04 : 0.07;
-    const volatility = riskMultiplier * (isRetired ? 0.08 : 0.15);
+    const p50 = Math.max(0, Math.round(balance));
+    const p10 = Math.max(0, Math.round(balance * (1 - spread * 1.5)));
+    const p25 = Math.max(0, Math.round(balance * (1 - spread * 0.8)));
+    const p75 = Math.round(balance * (1 + spread * 0.8));
+    const p90 = Math.round(balance * (1 + spread * 1.5));
 
-    const median = balance * Math.pow(1 + baseGrowth, yearsFromStart);
-    const contribution = isRetired ? 0 : monthlySavings * 12 * yearsFromStart;
+    data.push({ age, p10, p25, p50, p75, p90 });
 
-    const p50 = median + contribution;
-    const p10 = p50 * (1 - volatility * 1.5 * Math.sqrt(yearsFromStart / 10));
-    const p25 = p50 * (1 - volatility * 0.8 * Math.sqrt(yearsFromStart / 10));
-    const p75 = p50 * (1 + volatility * 0.8 * Math.sqrt(yearsFromStart / 10));
-    const p90 = p50 * (1 + volatility * 1.5 * Math.sqrt(yearsFromStart / 10));
-
-    data.push({
-      age,
-      p10: Math.max(0, Math.round(p10)),
-      p25: Math.max(0, Math.round(p25)),
-      p50: Math.round(p50),
-      p75: Math.round(p75),
-      p90: Math.round(p90),
-    });
+    if (isRetired) {
+      // Distribution phase: withdraw spending minus social security, then grow
+      const annualWithdrawal = (retirementSpending - socialSecurityMonthly) * 12;
+      balance -= annualWithdrawal;
+      balance *= 1 + retiredGrowthRate;
+    } else {
+      // Accumulation phase: contribute and grow
+      balance += monthlySavings * 12;
+      balance *= 1 + growthRate;
+    }
+    if (balance < 0) balance = 0;
   }
 
   return data;
@@ -58,6 +61,7 @@ export default function Index() {
   const [initialInvestment, setInitialInvestment] = useState(125000);
   const [riskLevel, setRiskLevel] = useState("moderate");
   const [socialSecurity, setSocialSecurity] = useState(2000);
+  const [retirementSpending, setRetirementSpending] = useState(5000);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | undefined>();
@@ -82,6 +86,7 @@ export default function Index() {
           if (profile.current_savings) setInitialInvestment(profile.current_savings);
           if (profile.monthly_contribution) setMonthlySavings(profile.monthly_contribution);
           if (profile.social_security_monthly) setSocialSecurity(profile.social_security_monthly);
+          if (profile.monthly_expenses) setRetirementSpending(profile.monthly_expenses);
         }
         if (user.retirement_age) setRetireAge(user.retirement_age);
         if (user.risk_tolerance) setRiskLevel(user.risk_tolerance);
@@ -119,8 +124,8 @@ export default function Index() {
 
   const localProjectionData = useMemo(
     () =>
-      generateProjectionData(userAge, retireAge, initialInvestment, monthlySavings, riskMultiplier),
-    [userAge, retireAge, initialInvestment, monthlySavings, riskMultiplier]
+      generateProjectionData(userAge, retireAge, initialInvestment, monthlySavings, riskMultiplier, retirementSpending, socialSecurity),
+    [userAge, retireAge, initialInvestment, monthlySavings, riskMultiplier, retirementSpending, socialSecurity]
   );
 
   const projectionData = apiProjectionData || localProjectionData;
@@ -140,6 +145,7 @@ export default function Index() {
           risk_tolerance: riskLevel,
           current_savings: initialInvestment,
           social_security_monthly: socialSecurity,
+          retirement_monthly_spending: retirementSpending,
         },
       });
 
@@ -169,7 +175,7 @@ export default function Index() {
       // Fall back to local simulation
       console.warn("API simulation failed, using local projection");
     }
-  }, [user, retireAge, monthlySavings, riskLevel, initialInvestment, socialSecurity]);
+  }, [user, retireAge, monthlySavings, riskLevel, initialInvestment, socialSecurity, retirementSpending]);
 
   // Chat handler - wired to real API
   const handleSendMessage = useCallback(
@@ -210,6 +216,7 @@ export default function Index() {
           if (params.current_savings) setInitialInvestment(params.current_savings);
           if (params.risk_tolerance) setRiskLevel(params.risk_tolerance);
           if (params.social_security_monthly) setSocialSecurity(params.social_security_monthly);
+          if (params.retirement_monthly_spending) setRetirementSpending(params.retirement_monthly_spending);
         }
       } catch {
         const errorMessage: ChatMessage = {
@@ -297,11 +304,13 @@ export default function Index() {
               initialInvestment={initialInvestment}
               riskLevel={riskLevel}
               socialSecurity={socialSecurity}
+              retirementSpending={retirementSpending}
               onRetireAgeChange={setRetireAge}
               onMonthlySavingsChange={setMonthlySavings}
               onInitialInvestmentChange={setInitialInvestment}
               onRiskLevelChange={setRiskLevel}
               onSocialSecurityChange={setSocialSecurity}
+              onRetirementSpendingChange={setRetirementSpending}
               onSimulate={handleSimulate}
             />
             <GoalsProgress goals={goals} />

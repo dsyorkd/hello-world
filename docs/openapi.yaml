@@ -9,7 +9,7 @@ info:
     name: RetireWise Team
 
 servers:
-  - url: https://helloworld.twistedlife.space/api
+  - url: https://retirewise.twistedlife.space/api
     description: Production
   - url: http://localhost:8788/api
     description: Local development

@@ -69,7 +69,7 @@ npm run deploy          # Deploy to Cloudflare Pages
 - Set via: `npx wrangler pages secret put ANTHROPIC_API_KEY`
 
 ## Deployment
-- **Production:** helloworld.twistedlife.space
+- **Production:** retirewise.twistedlife.space
 - **Pages project:** hello-world-app
 - **CI:** Push to main triggers test → deploy → validate pipeline
 - **Account ID:** 86be4cee951aa89f49634541ed658e39

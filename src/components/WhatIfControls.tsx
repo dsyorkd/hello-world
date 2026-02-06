@@ -18,11 +18,13 @@ interface WhatIfControlsProps {
   initialInvestment: number;
   riskLevel: string;
   socialSecurity: number;
+  retirementSpending: number;
   onRetireAgeChange: (value: number) => void;
   onMonthlySavingsChange: (value: number) => void;
   onInitialInvestmentChange: (value: number) => void;
   onRiskLevelChange: (value: string) => void;
   onSocialSecurityChange: (value: number) => void;
+  onRetirementSpendingChange: (value: number) => void;
   onSimulate: () => void;
 }
 
@@ -32,11 +34,13 @@ export function WhatIfControls({
   initialInvestment,
   riskLevel,
   socialSecurity,
+  retirementSpending,
   onRetireAgeChange,
   onMonthlySavingsChange,
   onInitialInvestmentChange,
   onRiskLevelChange,
   onSocialSecurityChange,
+  onRetirementSpendingChange,
   onSimulate,
 }: WhatIfControlsProps) {
   return (
@@ -124,6 +128,30 @@ export function WhatIfControls({
               <SelectItem value="aggressive">Aggressive</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Retirement Monthly Spending */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm text-muted-foreground">Spend/mo in retirement</Label>
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">$</span>
+              <Input
+                type="number"
+                value={retirementSpending}
+                onChange={(e) => onRetirementSpendingChange(Number(e.target.value))}
+                className="w-20 h-7 text-right font-mono text-sm"
+              />
+            </div>
+          </div>
+          <Slider
+            value={[retirementSpending]}
+            onValueChange={([value]) => onRetirementSpendingChange(value)}
+            min={1000}
+            max={15000}
+            step={250}
+            className="w-full"
+          />
         </div>
 
         {/* Social Security */}
