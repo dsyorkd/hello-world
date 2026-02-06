@@ -65,8 +65,8 @@ npm run deploy          # Deploy to Cloudflare Pages
 - JSON request/response bodies
 
 ## Environment Variables (Cloudflare Secrets)
-- `AI_API_KEY` - LLM API key (NEVER in code or git)
-- Set via: `npx wrangler pages secret put AI_API_KEY`
+- `ANTHROPIC_API_KEY` - Claude API key (NEVER in code or git)
+- Set via: `npx wrangler pages secret put ANTHROPIC_API_KEY`
 
 ## Deployment
 - **Production:** helloworld.twistedlife.space

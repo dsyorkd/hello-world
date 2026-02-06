@@ -307,7 +307,7 @@ Output:
 - Explanation of why each model fits or doesn't fit their situation
 
 **Environment Variable Required:**
-- `AI_API_KEY` - Stored as Cloudflare Pages secret (NEVER in code)
+- `ANTHROPIC_API_KEY` - Stored as Cloudflare Pages secret (NEVER in code)
 
 ---
 
@@ -414,7 +414,7 @@ See `docs/DESIGN_PROMPT.md` for the UI/UX design specification.
 - `zod` - Schema validation (shared frontend/backend)
 
 ### Cloudflare Secrets (NEVER in code)
-- `AI_API_KEY` - LLM API key for onboarding AI
+- `ANTHROPIC_API_KEY` - Claude API key for onboarding AI
 - Existing: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 
 ### GitHub Secrets
