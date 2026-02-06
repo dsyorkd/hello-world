@@ -1,16 +1,277 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* RetireWise Design System */
+    --background: 210 20% 98%;
+    --foreground: 240 10% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+
+    /* Deep Navy - Primary */
+    --primary: 212 52% 25%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Muted surfaces */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 212 52% 25%;
+
+    --muted: 215 20% 94%;
+    --muted-foreground: 215 16% 47%;
+
+    /* Warm Amber - Accent/CTA */
+    --accent: 33 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Financial Green - Success */
+    --success: 123 38% 33%;
+    --success-foreground: 0 0% 100%;
+
+    /* Alert Red - Destructive/Warning */
+    --destructive: 0 65% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Warning Banner */
+    --warning: 30 100% 94%;
+    --warning-foreground: 24 100% 45%;
+
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 212 52% 25%;
+
+    --radius: 0.625rem;
+
+    /* Chart Colors */
+    --chart-primary: 212 52% 25%;
+    --chart-success: 123 38% 33%;
+    --chart-accent: 33 100% 50%;
+    --chart-purple: 263 70% 50%;
+    --chart-cyan: 187 85% 43%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 212 52% 25%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 212 52% 25%;
+  }
+
+  .dark {
+    --background: 220 20% 14%;
+    --foreground: 210 40% 96%;
+
+    --card: 220 20% 18%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 220 20% 18%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 210 60% 70%;
+    --primary-foreground: 220 20% 10%;
+
+    --secondary: 215 25% 24%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 215 20% 22%;
+    --muted-foreground: 215 20% 70%;
+
+    --accent: 33 100% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 123 45% 50%;
+    --success-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 210 40% 98%;
+
+    --warning: 30 60% 25%;
+    --warning-foreground: 33 100% 65%;
+
+    --border: 215 20% 28%;
+    --input: 215 20% 25%;
+    --ring: 210 60% 70%;
+
+    /* Chart colors for dark mode - brighter and more visible */
+    --chart-primary: 210 70% 60%;
+    --chart-success: 123 50% 55%;
+    --chart-accent: 33 100% 60%;
+    --chart-purple: 263 70% 65%;
+    --chart-cyan: 187 85% 55%;
+
+    --sidebar-background: 220 20% 12%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 210 70% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 20% 22%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 215 20% 25%;
+    --sidebar-ring: 210 70% 60%;
+  }
 }
 
-body {
-  margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  padding: 2rem 0;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Tabular figures for financial data */
+  .font-mono {
+    font-feature-settings: "tnum";
+  }
 }
 
-#root {
-  width: 100%;
+@layer components {
+  /* Metric Card Styles */
+  .metric-card {
+    @apply bg-card rounded-xl p-5 transition-all duration-200 ease-out;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Chart Container */
+  .chart-container {
+    @apply bg-card rounded-xl p-6;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Control Panel */
+  .control-panel {
+    @apply bg-card rounded-xl p-5;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Chat Bubble Styles */
+  .chat-bubble-ai {
+    @apply bg-muted text-foreground rounded-2xl rounded-bl-md px-4 py-3 max-w-[85%];
+  }
+
+  .chat-bubble-user {
+    @apply bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3 max-w-[85%];
+  }
+
+  /* Progress Bar */
+  .progress-track {
+    @apply bg-muted rounded-full h-2 overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply bg-primary h-full rounded-full transition-all duration-500 ease-out;
+  }
+
+  /* Disclaimer Banner */
+  .disclaimer-banner {
+    @apply bg-warning text-warning-foreground;
+  }
+
+  /* Trend Indicators */
+  .trend-positive {
+    @apply text-success flex items-center gap-1;
+  }
+
+  .trend-negative {
+    @apply text-destructive flex items-center gap-1;
+  }
+}
+
+@layer utilities {
+  /* Smooth number animations */
+  .animate-count-up {
+    animation: countUp 1s ease-out forwards;
+  }
+
+  @keyframes countUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Fade in animation */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Slide up animation */
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Typing indicator */
+  .typing-dot {
+    animation: typingBounce 1.4s infinite ease-in-out both;
+  }
+
+  .typing-dot:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+
+  .typing-dot:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+
+  @keyframes typingBounce {
+    0%, 80%, 100% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Smooth chart transitions */
+  .chart-smooth {
+    transition: all 0.4s ease-out;
+  }
 }

@@ -1,105 +1,42 @@
-.app-container {
-  max-width: 800px;
+#root {
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-
-.app-header {
   text-align: center;
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 2px solid #e0e0e0;
 }
 
-.app-header h1 {
-  color: #f38020;
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-.app-header p {
-  color: #666;
-  font-size: 1.1rem;
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.main-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
 }
 
-.greeting-form-section {
-  background: #f9f9f9;
-  padding: 2rem;
-  border-radius: 8px;
+.card {
+  padding: 2em;
 }
 
-.greeting-form-section h2 {
-  margin-top: 0;
-  color: #333;
-}
-
-.greeting-form {
-  display: flex;
-  gap: 1rem;
-}
-
-.greeting-input {
-  flex: 1;
-  padding: 0.75rem;
-  border: 2px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.greeting-input:focus {
-  outline: none;
-  border-color: #f38020;
-}
-
-.submit-button {
-  padding: 0.75rem 1.5rem;
-  background: #f38020;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.submit-button:hover {
-  background: #d66f1a;
-}
-
-.greetings-list-section h2 {
-  color: #333;
-}
-
-.greetings-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.greeting-item {
-  background: white;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
-  border-left: 4px solid #f38020;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.greeting-message {
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.greeting-timestamp {
-  font-size: 0.85rem;
-  color: #999;
+.read-the-docs {
+  color: #888;
 }
