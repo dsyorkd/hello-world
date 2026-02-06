@@ -1,0 +1,364 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Database Schema & Migrations",
+      "description": "Create D1 database schema with tables for users, financial_profiles, goals, scenarios, and conversations. Apply migrations locally and to remote.",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "tags": [
+        "backend",
+        "database"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "2",
+      "title": "OpenAPI Specification",
+      "description": "Define complete OpenAPI 3.1 spec covering all API endpoints: auth, users, financial-profile, goals, models (monte-carlo, fixed-return, three-scenario, compare), scenarios, and AI chat.",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "tags": [
+        "api",
+        "contract"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "3",
+      "title": "Backend Middleware & Auth",
+      "description": "Implement Cloudflare Pages Functions middleware for CORS, session validation, and error handling. Build auth endpoints (login, session validation) with UUID-based sessions.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "1"
+      ],
+      "tags": [
+        "backend",
+        "auth"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "4",
+      "title": "User & Financial Profile API",
+      "description": "Build CRUD endpoints for users and financial profiles. GET/PUT user by ID, POST/GET/PUT financial profile, disclaimer acknowledgment endpoint.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "3"
+      ],
+      "tags": [
+        "backend",
+        "api"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "5",
+      "title": "Goals API",
+      "description": "Build CRUD endpoints for user financial goals. POST create, GET by user, PUT update, DELETE individual goals.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "3"
+      ],
+      "tags": [
+        "backend",
+        "api"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "6",
+      "title": "Monte Carlo Simulation Engine",
+      "description": "Core feature: Implement Monte Carlo retirement simulation with 1000+ random scenarios. Box-Muller transform for normal distribution. Risk profiles (conservative/moderate/aggressive). Output percentile paths, success rate, retirement balances.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "4"
+      ],
+      "tags": [
+        "backend",
+        "simulation",
+        "core"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "7",
+      "title": "Fixed Return & Three-Scenario Models",
+      "description": "Implement fixed return projection model and three-scenario (best/expected/worst) model. Model comparison endpoint.",
+      "status": "in-progress",
+      "priority": "medium",
+      "dependencies": [
+        "4"
+      ],
+      "tags": [
+        "backend",
+        "simulation"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "8",
+      "title": "AI Chat Endpoint",
+      "description": "Build /api/ai/chat endpoint proxying to Anthropic Claude API. Financial advisor persona system prompt. Extract structured parameters from conversation. Track onboarding completion. Persist conversation history in D1.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "3"
+      ],
+      "tags": [
+        "backend",
+        "ai"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "9",
+      "title": "Scenarios API",
+      "description": "Build CRUD for saved simulation scenarios. POST save, GET by user, toggle active scenario.",
+      "status": "in-progress",
+      "priority": "medium",
+      "dependencies": [
+        "3"
+      ],
+      "tags": [
+        "backend",
+        "api"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "10",
+      "title": "Frontend Infrastructure & Routing",
+      "description": "Set up React Router, Tailwind CSS theme, app shell with Layout component, auth guards, and API client utility matching OpenAPI spec.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "2"
+      ],
+      "tags": [
+        "frontend",
+        "infrastructure"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "11",
+      "title": "Disclaimer System",
+      "description": "Build DisclaimerModal (every login, must acknowledge) and DisclaimerBanner (persistent top banner). 'NOT financial advice' messaging. Cannot proceed without acknowledgment.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "10"
+      ],
+      "tags": [
+        "frontend",
+        "compliance"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "12",
+      "title": "Landing Page & Auth Flow",
+      "description": "Build landing page with RetireWise branding, email login, value propositions. Connect to auth API. Store session token in localStorage.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "10",
+        "11"
+      ],
+      "tags": [
+        "frontend",
+        "auth"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "13",
+      "title": "AI Onboarding Chat Interface",
+      "description": "Build conversational chat UI for AI-guided onboarding. Chat bubbles, progress indicator, category checklist. Parameter extraction display. Confirm/edit extracted parameters before saving.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "10"
+      ],
+      "tags": [
+        "frontend",
+        "onboarding",
+        "ai"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "14",
+      "title": "Dashboard - Metrics & Charts",
+      "description": "PRIMARY VIEW: User info front and center. Metrics cards (portfolio, contribution, projected fund, success rate, readiness score). Monte Carlo fan chart with Chart.js. Goal line overlay.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "10"
+      ],
+      "tags": [
+        "frontend",
+        "dashboard",
+        "core"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "15",
+      "title": "Dashboard - What-If Controls",
+      "description": "Scenario control sliders (retirement age, contribution, risk, Social Security). Real-time chart updates. Run Simulation button.",
+      "status": "in-progress",
+      "priority": "medium",
+      "dependencies": [
+        "14"
+      ],
+      "tags": [
+        "frontend",
+        "dashboard"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "16",
+      "title": "Model Selection & Comparison View",
+      "description": "Model selector cards with previews. Side-by-side comparison with overlay chart. Visual explanation of each model type.",
+      "status": "in-progress",
+      "priority": "medium",
+      "dependencies": [
+        "14"
+      ],
+      "tags": [
+        "frontend",
+        "models"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "17",
+      "title": "Profile & Financial Summary Views",
+      "description": "User profile view/edit. Financial summary display/edit. Goal management UI.",
+      "status": "in-progress",
+      "priority": "medium",
+      "dependencies": [
+        "10"
+      ],
+      "tags": [
+        "frontend",
+        "profile"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "18",
+      "title": "Backend Unit Tests (90% coverage)",
+      "description": "Unit tests for Monte Carlo engine, fixed return model, three-scenario model, utility functions. Vitest framework. 90% code coverage threshold.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "6",
+        "7"
+      ],
+      "tags": [
+        "testing",
+        "backend"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "19",
+      "title": "Frontend Unit Tests (90% coverage)",
+      "description": "Unit tests for formatters, hooks, component rendering. @testing-library/react + Vitest. 90% coverage threshold.",
+      "status": "in-progress",
+      "priority": "high",
+      "dependencies": [
+        "14"
+      ],
+      "tags": [
+        "testing",
+        "frontend"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "20",
+      "title": "Playwright E2E Tests",
+      "description": "End-to-end tests: landing page flow, disclaimer acknowledgment, onboarding chat, dashboard load, model comparison, what-if controls.",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [
+        "12",
+        "13",
+        "14"
+      ],
+      "tags": [
+        "testing",
+        "e2e"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "21",
+      "title": "Merge Feature Branches & Deploy",
+      "description": "Orchestrator merges feat/api and feat/ui into main. Resolve merge conflicts. Run full test suite. Push to main to trigger deployment pipeline.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [
+        "18",
+        "19"
+      ],
+      "tags": [
+        "deployment",
+        "orchestrator"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "22",
+      "title": "Apply D1 Migration to Remote",
+      "description": "Apply database migrations to the remote D1 instance for production use.",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [
+        "1"
+      ],
+      "tags": [
+        "deployment",
+        "database"
+      ],
+      "updatedAt": "2026-02-06T19:35:54.343Z",
+      "subtasks": []
+    },
+    {
+      "id": "23",
+      "title": "Post-Deploy Validation",
+      "description": "Verify production deployment: homepage loads, API endpoints respond, disclaimer shows, onboarding flow works.",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [
+        "21",
+        "22"
+      ],
+      "tags": [
+        "deployment",
+        "validation"
+      ],
+      "subtasks": []
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastModified": "2026-02-06T19:35:54.344Z",
+    "taskCount": 23,
+    "completedCount": 3,
+    "tags": [
+      "master"
+    ]
+  }
+}
