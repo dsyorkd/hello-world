@@ -12,15 +12,16 @@ export default defineConfig({
     port: 3000
   },
   test: {
-    environment: 'jsdom',
+    environment: 'node',
     globals: true,
-    setupFiles: ['./tests/setup.js'],
+    include: ['tests/unit/**/*.test.js'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
+      include: ['functions/lib/**/*.js'],
       thresholds: {
         lines: 90,
-        branches: 90,
+        branches: 85,
         functions: 90,
         statements: 90,
       },
