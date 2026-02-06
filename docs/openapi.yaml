@@ -1,0 +1,975 @@
+openapi: 3.1.0
+info:
+  title: RetireWise API
+  description: |
+    Financial planning and retirement simulation API.
+    NOT financial advice - for educational/entertainment purposes only.
+  version: 1.0.0
+  contact:
+    name: RetireWise Team
+
+servers:
+  - url: https://helloworld.twistedlife.space/api
+    description: Production
+  - url: http://localhost:8788/api
+    description: Local development
+
+paths:
+  /auth/login:
+    post:
+      summary: Create or resume a user session
+      operationId: login
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+      responses:
+        "200":
+          description: Session created/resumed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+                  session_token:
+                    type: string
+                  is_new_user:
+                    type: boolean
+                  disclaimer_required:
+                    type: boolean
+
+  /auth/session:
+    get:
+      summary: Validate current session
+      operationId: getSession
+      tags: [Auth]
+      security:
+        - sessionToken: []
+      responses:
+        "200":
+          description: Valid session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /users/{userId}:
+    get:
+      summary: Get user profile
+      operationId: getUser
+      tags: [Users]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: Update user profile
+      operationId: updateUser
+      tags: [Users]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{userId}/disclaimer:
+    post:
+      summary: Acknowledge disclaimer
+      operationId: acknowledgeDisclaimer
+      tags: [Users]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          description: Disclaimer acknowledged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  acknowledged_at:
+                    type: string
+                    format: date-time
+
+  /financial-profile:
+    post:
+      summary: Create financial profile
+      operationId: createFinancialProfile
+      tags: [Financial Profile]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FinancialProfileCreate"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinancialProfile"
+
+  /financial-profile/{userId}:
+    get:
+      summary: Get user's financial profile
+      operationId: getFinancialProfile
+      tags: [Financial Profile]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          description: Financial profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinancialProfile"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      summary: Update financial profile
+      operationId: updateFinancialProfile
+      tags: [Financial Profile]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FinancialProfileUpdate"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinancialProfile"
+
+  /goals:
+    post:
+      summary: Create a financial goal
+      operationId: createGoal
+      tags: [Goals]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalCreate"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+
+  /goals/{userId}:
+    get:
+      summary: Get user's goals
+      operationId: getUserGoals
+      tags: [Goals]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          description: List of goals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  goals:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Goal"
+
+  /goals/{userId}/{goalId}:
+    put:
+      summary: Update a goal
+      operationId: updateGoal
+      tags: [Goals]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalUpdate"
+      responses:
+        "200":
+          description: Updated goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+    delete:
+      summary: Delete a goal
+      operationId: deleteGoal
+      tags: [Goals]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /models/monte-carlo:
+    post:
+      summary: Run Monte Carlo retirement simulation
+      operationId: runMonteCarlo
+      tags: [Models]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MonteCarloInput"
+      responses:
+        "200":
+          description: Simulation results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonteCarloResult"
+
+  /models/fixed-return:
+    post:
+      summary: Run fixed return projection
+      operationId: runFixedReturn
+      tags: [Models]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FixedReturnInput"
+      responses:
+        "200":
+          description: Projection results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FixedReturnResult"
+
+  /models/three-scenario:
+    post:
+      summary: Run three-scenario projection
+      operationId: runThreeScenario
+      tags: [Models]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ThreeScenarioInput"
+      responses:
+        "200":
+          description: Three scenario results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThreeScenarioResult"
+
+  /models/compare:
+    post:
+      summary: Compare multiple model results
+      operationId: compareModels
+      tags: [Models]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, model_types]
+              properties:
+                user_id:
+                  type: string
+                model_types:
+                  type: array
+                  items:
+                    type: string
+                    enum: [monte_carlo, fixed_return, three_scenario]
+                parameters_override:
+                  $ref: "#/components/schemas/ModelParametersOverride"
+      responses:
+        "200":
+          description: Comparison results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comparisons:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        model_type:
+                          type: string
+                        summary:
+                          $ref: "#/components/schemas/ModelSummary"
+
+  /scenarios:
+    post:
+      summary: Save a scenario
+      operationId: saveScenario
+      tags: [Scenarios]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScenarioCreate"
+      responses:
+        "201":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scenario"
+
+  /scenarios/{userId}:
+    get:
+      summary: Get user's saved scenarios
+      operationId: getUserScenarios
+      tags: [Scenarios]
+      security:
+        - sessionToken: []
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          description: List of scenarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scenarios:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Scenario"
+
+  /ai/chat:
+    post:
+      summary: Send message to AI onboarding assistant
+      operationId: aiChat
+      tags: [AI]
+      security:
+        - sessionToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, message]
+              properties:
+                user_id:
+                  type: string
+                message:
+                  type: string
+                conversation_id:
+                  type: string
+                  description: Existing conversation ID to continue, or omit for new
+      responses:
+        "200":
+          description: AI response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: AI's conversational response
+                  conversation_id:
+                    type: string
+                  extracted_parameters:
+                    $ref: "#/components/schemas/ExtractedParameters"
+                  onboarding_complete:
+                    type: boolean
+                  recommended_model:
+                    type: string
+                    enum: [monte_carlo, fixed_return, three_scenario]
+
+components:
+  securitySchemes:
+    sessionToken:
+      type: apiKey
+      in: header
+      name: X-Session-Token
+
+  parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        age:
+          type: integer
+        retirement_age:
+          type: integer
+        risk_tolerance:
+          type: string
+          enum: [conservative, moderate, aggressive]
+        employment_status:
+          type: string
+        disclaimer_acknowledged_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        has_financial_profile:
+          type: boolean
+        onboarding_complete:
+          type: boolean
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+        retirement_age:
+          type: integer
+        risk_tolerance:
+          type: string
+          enum: [conservative, moderate, aggressive]
+        employment_status:
+          type: string
+
+    FinancialProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        annual_income:
+          type: number
+        current_savings:
+          type: number
+        monthly_contribution:
+          type: number
+        retirement_accounts:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: ["401k", "ira", "roth_ira", "roth_401k", "pension", "other"]
+              balance:
+                type: number
+              monthly_contribution:
+                type: number
+        social_security_monthly:
+          type: number
+        total_debt:
+          type: number
+        monthly_expenses:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    FinancialProfileCreate:
+      type: object
+      required: [user_id, annual_income, current_savings, monthly_contribution]
+      properties:
+        user_id:
+          type: string
+        annual_income:
+          type: number
+        current_savings:
+          type: number
+        monthly_contribution:
+          type: number
+        retirement_accounts:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              balance:
+                type: number
+              monthly_contribution:
+                type: number
+        social_security_monthly:
+          type: number
+          default: 0
+        total_debt:
+          type: number
+          default: 0
+        monthly_expenses:
+          type: number
+          default: 0
+
+    FinancialProfileUpdate:
+      type: object
+      properties:
+        annual_income:
+          type: number
+        current_savings:
+          type: number
+        monthly_contribution:
+          type: number
+        retirement_accounts:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              balance:
+                type: number
+              monthly_contribution:
+                type: number
+        social_security_monthly:
+          type: number
+        total_debt:
+          type: number
+        monthly_expenses:
+          type: number
+
+    Goal:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        goal_type:
+          type: string
+          enum: [retirement_income, legacy, major_expense]
+        description:
+          type: string
+        target_amount:
+          type: number
+          nullable: true
+        target_monthly_income:
+          type: number
+          nullable: true
+        target_date:
+          type: string
+          nullable: true
+        priority:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    GoalCreate:
+      type: object
+      required: [user_id, goal_type]
+      properties:
+        user_id:
+          type: string
+        goal_type:
+          type: string
+          enum: [retirement_income, legacy, major_expense]
+        description:
+          type: string
+        target_amount:
+          type: number
+        target_monthly_income:
+          type: number
+        target_date:
+          type: string
+        priority:
+          type: integer
+          default: 1
+
+    GoalUpdate:
+      type: object
+      properties:
+        description:
+          type: string
+        target_amount:
+          type: number
+        target_monthly_income:
+          type: number
+        target_date:
+          type: string
+        priority:
+          type: integer
+
+    MonteCarloInput:
+      type: object
+      required: [user_id]
+      properties:
+        user_id:
+          type: string
+        simulation_count:
+          type: integer
+          default: 1000
+          minimum: 100
+          maximum: 10000
+        max_age:
+          type: integer
+          default: 95
+        override_params:
+          $ref: "#/components/schemas/ModelParametersOverride"
+
+    MonteCarloResult:
+      type: object
+      properties:
+        percentile_paths:
+          type: object
+          description: Portfolio value by year at each percentile
+          properties:
+            p10:
+              type: array
+              items:
+                $ref: "#/components/schemas/YearValue"
+            p25:
+              type: array
+              items:
+                $ref: "#/components/schemas/YearValue"
+            p50:
+              type: array
+              items:
+                $ref: "#/components/schemas/YearValue"
+            p75:
+              type: array
+              items:
+                $ref: "#/components/schemas/YearValue"
+            p90:
+              type: array
+              items:
+                $ref: "#/components/schemas/YearValue"
+        success_rate:
+          type: number
+          description: Percentage of simulations where funds last to max_age
+        median_at_retirement:
+          type: number
+        worst_case_at_retirement:
+          type: number
+        best_case_at_retirement:
+          type: number
+        simulation_count:
+          type: integer
+
+    FixedReturnInput:
+      type: object
+      required: [user_id]
+      properties:
+        user_id:
+          type: string
+        annual_return:
+          type: number
+          description: Override annual return rate (e.g. 0.07 for 7%)
+        inflation_rate:
+          type: number
+          default: 0.03
+        override_params:
+          $ref: "#/components/schemas/ModelParametersOverride"
+
+    FixedReturnResult:
+      type: object
+      properties:
+        projection:
+          type: array
+          items:
+            $ref: "#/components/schemas/YearValue"
+        balance_at_retirement:
+          type: number
+        years_funds_last:
+          type: integer
+        monthly_retirement_income:
+          type: number
+        meets_goal:
+          type: boolean
+
+    ThreeScenarioInput:
+      type: object
+      required: [user_id]
+      properties:
+        user_id:
+          type: string
+        override_params:
+          $ref: "#/components/schemas/ModelParametersOverride"
+
+    ThreeScenarioResult:
+      type: object
+      properties:
+        best_case:
+          $ref: "#/components/schemas/ScenarioProjection"
+        expected:
+          $ref: "#/components/schemas/ScenarioProjection"
+        worst_case:
+          $ref: "#/components/schemas/ScenarioProjection"
+
+    ScenarioProjection:
+      type: object
+      properties:
+        annual_return:
+          type: number
+        projection:
+          type: array
+          items:
+            $ref: "#/components/schemas/YearValue"
+        balance_at_retirement:
+          type: number
+        years_funds_last:
+          type: integer
+        meets_goal:
+          type: boolean
+
+    YearValue:
+      type: object
+      properties:
+        age:
+          type: integer
+        year:
+          type: integer
+        value:
+          type: number
+
+    ModelParametersOverride:
+      type: object
+      description: Override user profile values for what-if scenarios
+      properties:
+        retirement_age:
+          type: integer
+        monthly_contribution:
+          type: number
+        risk_tolerance:
+          type: string
+          enum: [conservative, moderate, aggressive]
+        current_savings:
+          type: number
+        retirement_monthly_spending:
+          type: number
+        social_security_monthly:
+          type: number
+
+    ModelSummary:
+      type: object
+      properties:
+        model_type:
+          type: string
+        balance_at_retirement:
+          type: number
+        success_rate:
+          type: number
+          nullable: true
+        years_funds_last:
+          type: integer
+        meets_goal:
+          type: boolean
+
+    ExtractedParameters:
+      type: object
+      description: Parameters extracted by AI from conversation
+      properties:
+        name:
+          type: string
+          nullable: true
+        age:
+          type: integer
+          nullable: true
+        retirement_age:
+          type: integer
+          nullable: true
+        risk_tolerance:
+          type: string
+          nullable: true
+        annual_income:
+          type: number
+          nullable: true
+        current_savings:
+          type: number
+          nullable: true
+        monthly_contribution:
+          type: number
+          nullable: true
+        monthly_expenses:
+          type: number
+          nullable: true
+        social_security_monthly:
+          type: number
+          nullable: true
+        retirement_accounts:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              balance:
+                type: number
+        goals:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              goal_type:
+                type: string
+              target_amount:
+                type: number
+              description:
+                type: string
+        completeness:
+          type: number
+          description: 0-1 score of how complete the profile is
+
+    Scenario:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        name:
+          type: string
+        model_type:
+          type: string
+        parameters_json:
+          type: string
+        results_json:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    ScenarioCreate:
+      type: object
+      required: [user_id, name, model_type, parameters_json, results_json]
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        model_type:
+          type: string
+          enum: [monte_carlo, fixed_return, three_scenario]
+        parameters_json:
+          type: string
+        results_json:
+          type: string
+        is_active:
+          type: boolean
+          default: false
