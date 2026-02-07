@@ -9,7 +9,7 @@ on:
       app_url:
         description: 'Application URL to validate'
         required: true
-        default: 'https://retirewise.twistedlife.space'
+        default: 'https://hello-world-app-ck2.pages.dev'
 
 jobs:
   validate-deployment:
@@ -23,11 +23,12 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Validate Homepage Availability
+        env:
+          APP_URL: ${{ github.event.inputs.app_url || 'https://hello-world-app-ck2.pages.dev' }}
         run: |
-          URL="${{ github.event.inputs.app_url || 'https://retirewise.twistedlife.space' }}"
-          echo "Validating deployment at: $URL"
+          echo "Validating deployment at: $APP_URL"
 
-          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL")
 
           if [ "$STATUS_CODE" -eq 200 ]; then
             echo "✓ Homepage is accessible (HTTP $STATUS_CODE)"
@@ -37,9 +38,10 @@ jobs:
           fi
 
       - name: Test API Auth Endpoint
+        env:
+          APP_URL: ${{ github.event.inputs.app_url || 'https://hello-world-app-ck2.pages.dev' }}
         run: |
-          URL="${{ github.event.inputs.app_url || 'https://retirewise.twistedlife.space' }}"
-          API_URL="${URL}/api/auth/login"
+          API_URL="${APP_URL}/api/auth/login"
 
           echo "Testing API endpoint: $API_URL"
 
